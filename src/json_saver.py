@@ -16,11 +16,16 @@ class JSONSaver(VacancySaver):
         Args:
             filename: Имя файла для сохранения
         """
-        self.filename = filename
+        self._filename = filename
 
         directory = os.path.dirname(filename)
         if directory:
             os.makedirs(directory, exist_ok=True)
+
+    @property
+    def filename(self) -> str:
+        """Получение имени файла"""
+        return self._filename
 
     def add_vacancy(self, vacancy: Vacancy) -> None:
         """Добавление вакансии в JSON-файл"""
@@ -73,14 +78,14 @@ class JSONSaver(VacancySaver):
     def _load_vacancies(self) -> list[dict[str, Any]]:
         """Загрузка вакансий из JSON-файла"""
         try:
-            with open(self.filename, "r", encoding="utf-8") as f:
+            with open(self._filename, "r", encoding="utf-8") as f:
                 return cast(list[dict[str, Any]], json.load(f))
         except (FileNotFoundError, json.JSONDecodeError):
             return []
 
     def _save_vacancies(self, vacancies: list[dict[str, Any]]) -> None:
         """Сохранение вакансий в JSON-файл"""
-        with open(self.filename, "w", encoding="utf-8") as f:
+        with open(self._filename, "w", encoding="utf-8") as f:
             json.dump(vacancies, f, ensure_ascii=False, indent=2)
 
     @staticmethod

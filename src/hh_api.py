@@ -11,13 +11,13 @@ class HeadHunterAPI(JobAPI):
     BASE_URL = "https://api.hh.ru/vacancies"
 
     def __init__(self) -> None:
-        self.session = requests.Session()
-        self.session.headers.update({"User-Agent": "VacancyParser/1.0 (maksym_krasovskiy@ya.ru)"})
+        self._session = requests.Session()
+        self._session.headers.update({"User-Agent": "VacancyParser/1.0 (maksym_krasovskiy@ya.ru)"})
 
     def connect(self) -> None:
         """Подключение к API HH"""
         try:
-            response = self.session.get(f"{self.BASE_URL}?text=test")
+            response = self._session.get(f"{self.BASE_URL}?text=test")
             response.raise_for_status()
         except requests.RequestException as e:
             print(f"Ошибка подключения к API HH.ru: {e}")
@@ -34,10 +34,12 @@ class HeadHunterAPI(JobAPI):
         Returns:
             Список вакансий в формате JSON
         """
+        self.connect()
+
         params: dict[str, Union[str, int]] = {"text": search_query, "area": area, "per_page": per_page, "page": 0}
 
         try:
-            response = self.session.get(self.BASE_URL, params=params)
+            response = self._session.get(self.BASE_URL, params=params)
             response.raise_for_status()
             data = response.json()
 
@@ -59,7 +61,7 @@ class HeadHunterAPI(JobAPI):
     def _get_vacancy_details(self, vacancy_url: str) -> Optional[dict[str, Any]]:
         """Получение детальной информации о вакансии"""
         try:
-            response = self.session.get(vacancy_url)
+            response = self._session.get(vacancy_url)
             response.raise_for_status()
             return cast(dict[str, Any], response.json())
         except requests.RequestException:

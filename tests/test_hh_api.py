@@ -15,7 +15,7 @@ class TestHeadHunterAPI:
         api = HeadHunterAPI()
 
         assert api.BASE_URL == "https://api.hh.ru/vacancies"
-        assert "User-Agent" in api.session.headers
+        assert "User-Agent" in api._session.headers
 
     @patch("requests.Session.get")
     def test_connect_success(self, mock_get: Mock) -> None:
@@ -38,9 +38,12 @@ class TestHeadHunterAPI:
         captured = capsys.readouterr()
         assert "Ошибка подключения" in captured.out
 
+    @patch.object(HeadHunterAPI, "connect")
     @patch("requests.Session.get")
-    def test_get_vacancies(self, mock_get: Mock) -> None:
+    def test_get_vacancies(self, mock_get: Mock, mock_connect: Mock) -> None:
         """Тест получения вакансий"""
+        mock_connect.return_value = None
+
         mock_response_main = Mock()
         mock_response_main.json.return_value = {
             "items": [
@@ -69,12 +72,18 @@ class TestHeadHunterAPI:
         api = HeadHunterAPI()
         vacancies = api.get_vacancies("Python")
 
+        mock_connect.assert_called_once()
+
         assert len(vacancies) == 2
         assert vacancies[0]["name"] == "Python Developer"
 
+    @patch.object(HeadHunterAPI, "connect")
     @patch("requests.Session.get")
-    def test_get_vacancies_request_exception(self, mock_get: Mock, capsys: pytest.CaptureFixture[str]) -> None:
+    def test_get_vacancies_request_exception(
+        self, mock_get: Mock, mock_connect: Mock, capsys: pytest.CaptureFixture[str]
+    ) -> None:
         """Тест исключения при запросе вакансий"""
+        mock_connect.return_value = None
         mock_get.side_effect = requests.RequestException("API error")
 
         api = HeadHunterAPI()

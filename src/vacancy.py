@@ -5,6 +5,18 @@ from typing import Any
 class Vacancy:
     """Класс для представления вакансии"""
 
+    __slots__ = (
+        "_name",
+        "_url",
+        "_salary",
+        "_description",
+        "_company",
+        "_experience",
+        "_employment",
+        "_salary_from",
+        "_salary_to",
+    )
+
     def __init__(
         self,
         name: str,
@@ -27,14 +39,59 @@ class Vacancy:
             experience: Требуемый опыт
             employment: Тип занятости
         """
-        self.name = name
-        self.url = url
-        self.salary = self._validate_salary(salary)
-        self.description = description
-        self.company = company
-        self.experience = experience
-        self.employment = employment
-        self.salary_from, self.salary_to = self._parse_salary(salary)
+        self._name = name
+        self._url = url
+        self._salary = self._validate_salary(salary)
+        self._description = description
+        self._company = company
+        self._experience = experience
+        self._employment = employment
+        self._salary_from, self._salary_to = self._parse_salary(salary)
+
+    @property
+    def name(self) -> str:
+        """Название вакансии"""
+        return self._name
+
+    @property
+    def url(self) -> str:
+        """Ссылка на вакансию"""
+        return self._url
+
+    @property
+    def salary(self) -> str:
+        """Зарплата"""
+        return self._salary
+
+    @property
+    def description(self) -> str:
+        """Описание вакансии"""
+        return self._description
+
+    @property
+    def company(self) -> str:
+        """Компания"""
+        return self._company
+
+    @property
+    def experience(self) -> str:
+        """Требуемый опыт"""
+        return self._experience
+
+    @property
+    def employment(self) -> str:
+        """Тип занятости"""
+        return self._employment
+
+    @property
+    def salary_from(self) -> int:
+        """Минимальная зарплата"""
+        return self._salary_from
+
+    @property
+    def salary_to(self) -> int:
+        """Максимальная зарплата"""
+        return self._salary_to
 
     @staticmethod
     def _validate_salary(salary: str) -> str:
@@ -77,39 +134,39 @@ class Vacancy:
     @property
     def avg_salary(self) -> float:
         """Средняя зарплата для сравнения"""
-        if self.salary_from and self.salary_to:
-            return (self.salary_from + self.salary_to) / 2
-        elif self.salary_from:
-            return float(self.salary_from)
-        elif self.salary_to:
-            return float(self.salary_to)
+        if self._salary_from and self._salary_to:
+            return (self._salary_from + self._salary_to) / 2
+        elif self._salary_from:
+            return float(self._salary_from)
+        elif self._salary_to:
+            return float(self._salary_to)
         else:
             return 0.0
 
     def __str__(self) -> str:
         """Строковое представление вакансии"""
         return (
-            f"{self.name}\n"
-            f"Компания: {self.company}\n"
-            f"Зарплата: {self.salary}\n"
-            f"Опыт: {self.experience}\n"
-            f"Тип занятости: {self.employment}\n"
-            f"Ссылка: {self.url}\n"
-            f"Описание: {self.description[:200]}...\n"
+            f"{self._name}\n"
+            f"Компания: {self._company}\n"
+            f"Зарплата: {self._salary}\n"
+            f"Опыт: {self._experience}\n"
+            f"Тип занятости: {self._employment}\n"
+            f"Ссылка: {self._url}\n"
+            f"Описание: {self._description[:200]}...\n"
         )
 
     def to_dict(self) -> dict[str, Any]:
         """Преобразование вакансии в словарь"""
         return {
-            "name": self.name,
-            "url": self.url,
-            "salary": self.salary,
-            "description": self.description,
-            "company": self.company,
-            "experience": self.experience,
-            "employment": self.employment,
-            "salary_from": self.salary_from,
-            "salary_to": self.salary_to,
+            "name": self._name,
+            "url": self._url,
+            "salary": self._salary,
+            "description": self._description,
+            "company": self._company,
+            "experience": self._experience,
+            "employment": self._employment,
+            "salary_from": self._salary_from,
+            "salary_to": self._salary_to,
         }
 
     @classmethod
