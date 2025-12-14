@@ -8,15 +8,18 @@ from .vacancy import Vacancy
 class TXTSaver(VacancySaver):
     """Класс для сохранения вакансий в TXT-файл"""
 
-    def __init__(self, filename: str = "data/vacancies.txt"):
+    def __init__(self, filename: str = "data/vacancies.json"):
         """
-        Инициализация TXT-сохранения.
+        Инициализация JSON-сохранения.
 
         Args:
             filename: Имя файла для сохранения
         """
         self.filename = filename
-        os.makedirs(os.path.dirname(filename), exist_ok=True)
+
+        directory = os.path.dirname(filename)
+        if directory:
+            os.makedirs(directory, exist_ok=True)
 
     def add_vacancy(self, vacancy: Vacancy) -> None:
         """Добавление вакансии в TXT-файл"""

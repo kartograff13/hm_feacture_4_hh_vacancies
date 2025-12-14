@@ -17,7 +17,10 @@ class JSONSaver(VacancySaver):
             filename: Имя файла для сохранения
         """
         self.filename = filename
-        os.makedirs(os.path.dirname(filename), exist_ok=True)
+
+        directory = os.path.dirname(filename)
+        if directory:
+            os.makedirs(directory, exist_ok=True)
 
     def add_vacancy(self, vacancy: Vacancy) -> None:
         """Добавление вакансии в JSON-файл"""

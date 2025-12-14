@@ -44,7 +44,7 @@ def get_vacancies_by_salary(vacancies: list[Vacancy], salary_range: str) -> list
         filtered = []
         for vacancy in vacancies:
             if vacancy.salary_from and vacancy.salary_to:
-                if not (vacancy.salary_to < min_salary or vacancy.salary_from > max_salary):
+                if vacancy.salary_from >= min_salary and vacancy.salary_to <= max_salary:
                     filtered.append(vacancy)
             elif vacancy.salary_from and vacancy.salary_from >= min_salary:
                 filtered.append(vacancy)
@@ -80,6 +80,8 @@ def get_top_vacancies(vacancies: list[Vacancy], top_n: int) -> list[Vacancy]:
     Returns:
         Список из top_n вакансий
     """
+    if top_n <= 0:
+        return []
     return vacancies[:top_n]
 
 
